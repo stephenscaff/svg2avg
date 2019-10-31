@@ -1,0 +1,190 @@
+$drop_icon_size: 5em;
+$drop_state_icon_size: 8em;
+
+.dropper {
+
+  &__header {
+    display: block;
+    padding: $pad-sm;
+    border-bottom: 1px solid #ddd;
+  }
+
+  &__title {
+    @include font-rwd($font-lg, $font-xl);
+    color: $color-blue-darkest;
+  }
+
+  &__main {
+    padding: 1em;
+  }
+
+  &__zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 30em;
+    background-color: $color-blue-lightest;
+    // border: 2px dashed #ddd;
+    border: 1px dashed #9daed6;
+    transition: background-color 0.5s ease, border-color 0.5s ease;
+
+    &.is-active {
+      background-color: $color-blue-light;
+      border-color: #0f1c3a;
+
+      .icon-drop__cloud {
+        opacity: 0;
+      }
+
+      .icon-drop__arrow {
+        animation: active-arrow 1.25s ease both infinite;
+      }
+    }
+
+    &.is-error {
+      background-color: $color-red-light;
+    }
+
+    &.is-success {
+      background-color: $color-green-light;
+    }
+  }
+
+  // Upload/Drop cloud icon (svg wrap)
+  &__icon {
+    width: $drop_icon_size;
+    height: $drop_icon_size;
+    overflow: hidden;
+    display: block;
+    margin: 0 auto;
+  }
+
+  // Upload/Drop cloud icon SVG
+ .icon-drop {
+   path {
+     fill: $color-blue-mid;
+   }
+
+   &__cloud {
+     opacity: 1;
+     transition: opacity 0.5s ease;
+   }
+   .dropper__zone.is-active &__cloud {
+     opacity: 0;
+    }
+
+    &__arrow {
+      transform-origin: bottom;
+    }
+  }
+
+  // Icon - Success/Error State
+  &__icon-state {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+
+    svg {
+      display: block;
+      margin: 0 auto;
+      width: $drop_state_icon_size;
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+  }
+
+  // Error / Success Message
+  &__msg {
+    position: absolute;
+    bottom: 3em;
+    display: block;
+    opacity: 0;
+
+    .is-success &.show-success {
+      opacity: 1;
+    }
+
+    .is-error &.show-error {
+      opacity: 1;
+    }
+  }
+}
+
+
+@keyframes active-arrow {
+  0% {
+    transform: translateY(18em);
+    opacity: 0;
+  }
+  60% {
+    transform: translateY(2em);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-6em);
+    opacity: 0;
+  }
+}
+
+
+@keyframes drop-enter {
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.4);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.is-success,
+.is-error {
+  .dropper__icon {
+    opacity: 0;
+  }
+  .dropper__icon-state svg {
+    animation: drop-enter 0.75s 0.2s ease forwards;
+  }
+}
+
+.is-success {
+
+  .show-success {
+    opacity: 1;
+  }
+
+  .show-error {
+    opacity: 0;
+  }
+}
+
+.is-error {
+
+  .show-error {
+    opacity: 1;
+  }
+
+  .show-success {
+    opacity: 0;
+  }
+}
+
+
+html {
+  background-color: $color-blue;
+  transition: background-color 1.25s ease;
+}
+html.is-success {
+  background-color: $color-green;
+}
+
+html.is-error {
+  background-color: $color-red;
+}

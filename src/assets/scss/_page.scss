@@ -1,0 +1,48 @@
+//----------------------------------------------
+//  Page
+//  Main Page Layout of dropper and Viewer
+//----------------------------------------------
+.page {
+  position: relative;
+  padding: $pad-lg 0;
+
+  &__header {
+    padding: 0 0 $pad;
+  }
+
+  &__title {
+    color: $color-white;
+    text-align: center;
+    @include font-rwd($font-xl, $font-xxl);
+  }
+
+  &__box {
+    max-width: 70em;
+    margin: 0 auto;
+    background-color: $color-white;
+    box-shadow: $box-shadow-lg;
+    border-radius: 4px;
+    overflow: hidden;
+  }
+
+  &__grid {
+
+    @media (min-width: $mq-med) {
+      display: flex;
+    }
+  }
+
+  &__dropper {
+    @media (min-width: $mq-med) {
+      flex-basis: 40%;
+      max-width: 40%;
+    }
+  }
+
+  &__viewer {
+    @media (min-width: $mq-med) {
+      flex-basis: 60%;
+      max-width: 60%;
+    }
+  }
+}
