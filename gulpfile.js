@@ -11,7 +11,7 @@ const gulp            = require('gulp'),
       rename          = require('gulp-rename'),
       sass            = require('gulp-sass'),
       source          = require('vinyl-source-stream'),
-      uglify          = require('gulp-uglifyes'),
+      terser          = require('gulp-terser'),
       gls             = require('gulp-live-server');
 
 // Server Port
@@ -57,14 +57,11 @@ function buildJS() {
   .on('error', handleError)
   .pipe(source('app.js'))
   .pipe(buffer())
-    .pipe(uglify({
-      mangle: false,
-      compress: false,
-      output: {
-        beautify: true
-      }
-    }))
-    .pipe(rename({suffix: '.min'}))
+  .pipe(terser({
+    mangle: false,
+    compress: true,
+  }))
+  .pipe(rename({suffix: '.min'}))
   .pipe(gulp.dest('dist/assets/js/'));
 }
 

@@ -21,6 +21,22 @@ Running this app will provide an interface to drop an SVG onto a file zone for c
 
 Running the project will compile the js and scss and start a server (s simple Express server via `gulp-live-server`) at [http://localhost:9000/](http://localhost:9000/).
 
+- `src/views/index.html` will build to `dist/index.html`
+- `src/assets/*` will build to `dist/assets/*`
+- `src/assets/js/app.js` is the main js entry point.
+
+
+### Process
+
+The process works like this:
+- A `drop` event listener triggers `event.dataTransfer.items` and the `FileReader` api to extract data from the svg (and validate the svg file type)
+- The data is then written to an imaginary node object, using `createDocumentFragment()` to ready it for conversion.
+- We then parse the available svg properties (`fill`, `fillOpacity`, `stroke`, etc) and convert it all into `AVG JSON`.
+- Our final `AVG` data sent back to the browser using `JSON.stringify` and inserted into our code viewer.
+- The user is also given a method to copy the final `AVG JSON` to clipboard using `window.getSelection()`,
+and `document.createRange()` to get the content and `document.execCommand('copy')` to interface with the clipboard.
+
+
 
 
 ### Adding AVG to an APL Doc
@@ -109,3 +125,11 @@ _APL AVG Example_
 ### Notes
 
   - On the web, an SVG `path` will default to `fill` a value of `rgb(0,0,0)` (black) if none is provided. AVG however, does not. If a `fill` value is not specifically defined, the `path` will not render. As such, we might want the converter to provide a black `fill` value if none id provided?
+
+
+### ToDos
+
+- Cleanup SVGs with poor formatting, removing empty groups and so on.
+- Maybe provide a download method, in addition to Copy to Clipboard?
+- Maybe provide a viewer tab with APL-ready code (AVG named inside `graphics` property and referenced in `mainTemplate`)? But, can't count on svg having an id to base name on. Maybe use filename?
+- The actual js could probably be more `pure` in nature.
