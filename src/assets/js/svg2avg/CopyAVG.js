@@ -1,7 +1,7 @@
 /**
- * PalatteColors
- * Copy to clipboard interaction for the palette-boxes component.
- *  @see scss/components/_palette-boxes.scss
+ * CopyAVG
+ * Copy to clipboard interaction for our final AVG JSON
+ * @author stephen scsff
  */
 
 const CopyAVG = (() => {
@@ -37,8 +37,8 @@ const CopyAVG = (() => {
         document.execCommand('copy')
         selection.removeAllRanges()
         CopyAVG.btnState(btn, 'Copied!', 'is-success')
-
-      } catch(e) {
+      }
+      catch(e) {
         CopyAVG.btnState(btn, 'Failed!', 'is-error')
       }
     },
@@ -60,7 +60,7 @@ const CopyAVG = (() => {
       setTimeout(() => {
         btnEl.textContent = original
         btnEl.classList.remove(btnStateClass)
-      }, 1200);
+      }, 1200)
     }
   }
 })()

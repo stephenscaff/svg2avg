@@ -4,7 +4,7 @@ import template from './template.js'
 
 const FileDropper = (() => {
   const fileDrop = document.querySelector('.js-file-dropper')
-  const editor = document.querySelector('#js-editor')
+  const viewer = document.querySelector('#js-viewer')
   const html = document.querySelector('html')
 
   return {
@@ -97,6 +97,22 @@ const FileDropper = (() => {
     },
 
     /**
+     * Create Fragment
+     * Creates a document fragment from string of
+     * html dom nodes without page reflow
+     * @param {string} htmlStr
+     */
+    createFrag(htmlStr){
+      let docFrag = document.createDocumentFragment()
+      let fragDiv = document.createElement("div")
+
+      fragDiv.innerHTML = htmlStr;
+      docFrag.appendChild(fragDiv);
+
+      return fragDiv
+    },
+
+    /**
      * readSVG
      * Read's SVG data via FileReader from drop event's dataTransfer.
      * @param {SVG element} el
@@ -121,35 +137,32 @@ const FileDropper = (() => {
 
           reader.onload = function(e) {
             let svgData = reader.result
-
-            // return svgData;
             FileDropper.write(svgData)
           }
         reader.readAsText(file)
       }
     },
 
+
+
     /**
      * Write
      * Created a docfrag for our svg data,
      * then calls SVG to AVG converion and outputs it
-     * to our editor view.
+     * to our viewer view.
      * @param {object} SVG Data
      * @see converter.js
      */
     write(data) {
 
-      let docFrag = document.createDocumentFragment()
-      let fragDiv = document.createElement("div")
+      let svgEl = FileDropper.createFrag(data).querySelector('svg')
 
-      fragDiv.innerHTML = data;
-      docFrag.appendChild(fragDiv);
-
-      let svgEl = fragDiv.querySelector('svg')
+      // Ensure viewer is cleared
+      viewer.innerHTML = ""
 
       template(svgEl).then(json => {
         const svgJson = JSON.stringify(json, null, 4)
-        editor.insertAdjacentHTML('beforeend', svgJson);
+        viewer.insertAdjacentHTML('beforeend', svgJson);
       });
     }
   }

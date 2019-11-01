@@ -1,3 +1,7 @@
+//----------------------------------------------
+//  Dropper
+//  File drop zone.
+//----------------------------------------------
 $drop_icon_size: 5em;
 $drop_state_icon_size: 8em;
 
@@ -101,6 +105,7 @@ $drop_state_icon_size: 8em;
     bottom: 3em;
     display: block;
     opacity: 0;
+    transition: opacity 1s ease;
 
     .is-success &.show-success {
       opacity: 1;
