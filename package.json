@@ -28,6 +28,8 @@
     "vinyl-source-stream": "^2.0.0"
   },
   "dependencies": {
-    "@babel/runtime": "^7.6.3"
+    "@babel/runtime": "^7.6.3",
+    "file-saver": "^2.0.2",
+    "jszip": "^3.2.2"
   }
 }

@@ -11,8 +11,12 @@ export default async function template(el) {
     type: 'AVG',
     version: '1.0'
   }
-  avgJson.width  = parseInt(el.getAttribute('width') || '100', 10);
-  avgJson.height = parseInt(el.getAttribute('height') || '100', 10);
+
+  const viewBox = el.getAttribute('viewBox')
+  const viewBoxArr = viewBox.split(' ', 4)
+
+  avgJson.width  = parseInt(el.getAttribute('width') || viewBoxArr[2], 10)
+  avgJson.height = parseInt(el.getAttribute('height') || viewBoxArr[3], 10)
   avgJson.items  = buildItems(el.children);
 
   return avgJson;

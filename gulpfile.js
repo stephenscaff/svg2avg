@@ -15,7 +15,7 @@ const gulp            = require('gulp'),
       gls             = require('gulp-live-server');
 
 // Server Port
-const PORT = 9000;
+const PORT = 8000;
 
 // Error handler
 function handleError(err) {

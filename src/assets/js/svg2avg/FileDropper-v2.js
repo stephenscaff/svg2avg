@@ -1,26 +1,14 @@
+import writeFile from './writeFile.js'
 import template from './template.js'
-import JSZip from 'jszip'
-import saveAs from 'file-saver';
 
 
-/**
- * FileDropper
- * Handles file drop events
- */
 const FileDropper = (() => {
-
-  const fileDrop  = document.querySelector('.js-file-dropper')
-  const viewer    = document.querySelector('#js-viewer')
-  const html      = document.querySelector('html')
-  let zip         = new JSZip()
-  let count       = 0;
+  const fileDrop = document.querySelector('.js-file-dropper')
+  const viewer = document.querySelector('#js-viewer')
+  const html = document.querySelector('html')
 
   return {
 
-    /**
-     * Init
-     * @example FileDropper.init()
-     */
     init() {
       this.bindEvents()
     },
@@ -142,39 +130,35 @@ const FileDropper = (() => {
     readSVG(el, dropEvent) {
 
       if (dropEvent.dataTransfer.items && dropEvent.dataTransfer.items[0].kind === 'file'){
-        const files   = dropEvent.dataTransfer.items
-        let numFiles  = files.length;
+          const files = dropEvent.dataTransfer.items;
+          let numFiles = files.length;
 
-        [...files].map(child => {
-          let file     = child.getAsFile()
-          let fileName = file.name.split('.')[0] + '.avg';
-          let reader   = new FileReader()
-          let isSVG    = FileDropper.validateSVG(file.type)
+          [...files].map(child => {
+            let file = child.getAsFile()
+            let filename = file.name.split('.')[0] + '.avg';
+            let reader = new FileReader()
+            let isSVG = FileDropper.validateSVG(file.type)
 
-          // Error and bail if not svg.
-          if (isSVG) {
-            FileDropper.success(el, numFiles)
-          } else {
-            FileDropper.error(el)
-            return
-          }
+            // Error and bail if not svg.
+            if (isSVG) {
+              FileDropper.success(el, numFiles)
+            } else {
+              FileDropper.error(el)
+              return
+            }
 
-          reader.onload = function(e) {
-            let svgData = reader.result
-            FileDropper.convertor(svgData, fileName, numFiles)
-          }
+            reader.onload = function(e) {
+              let svgData = reader.result
 
-          reader.readAsText(file)
+              FileDropper.convertor(svgData, filename, numFiles)
+            }
+            reader.readAsText(file)
 
         }).filter(child => !!child)
       }
     },
 
-    /**
-     * Converter
-     * Handles the SVG to AVG conversion
-     * @requires template.js
-     */
+
     convertor(data, filename, numFiles) {
       let frag = FileDropper.createFrag(data).querySelector('svg')
 
@@ -182,50 +166,56 @@ const FileDropper = (() => {
 
       template(frag).then(json => {
         const avgJson = JSON.stringify(json, null, 4)
-
         if (numFiles === 1) {
-          FileDropper.writeToViewer(avgJson)
+          FileDropper.writeToEditor(avgJson)
         } else {
-          FileDropper.createZip(avgJson, filename, numFiles)
+          FileDropper.createFile(avgJson, filename)
         }
       })
     },
 
+    writeToEditor(avgJson){
+      viewer.insertAdjacentHTML('beforeend', avgJson)
+    },
 
     /**
-     * Write To Editor
-     * Outputs AVG JSON to our code viewer
-     * @param {string} - string of avg json
+     * Write
+     * Inserts AVG Json to viewer after conversion
+     * @param {object} SVG Data
+     * @see converter.js
      */
-    writeToViewer(avgJsonStr){
-      viewer.insertAdjacentHTML('beforeend', avgJsonStr)
+    write(data, filename) {
+
+      let svgEl = FileDropper.createFrag(data).querySelector('svg');
+
+      // Ensure viewer is cleared
+      viewer.innerHTML = ""
+
+      // Convert and send back to dom
+      template(svgEl).then(json => {
+        const svgJson = JSON.stringify(json, null, 4)
+        console.log('AVGs===', svgJson)
+
+        FileDropper.createFile(svgJson, filename)
+        //console.log('files', file)
+        viewer.insertAdjacentHTML('beforeend', svgJson);
+      });
     },
 
 
-    /**
-     * Create Zip
-     * @param {string} avgJsonStr - avg json as string
-     * @param {string} fileName
-     * @param {int} numFiles
-     * @requires JSZip, saveAs
-     */
-    createZip(avgJsonStr, fileName, numFiles){
-      let blob = new Blob([avgJsonStr], {type: 'application/svg+xml'})
+    createFile(avgData, filename){
+      var blob = new Blob([avgData], {type: 'application/avg+xml'})
 
-      zip.folder('avgs').file(fileName, blob, {
-        binary: true
-      })
-
-      ++count
-
-      if (count == numFiles) {
-         zip
-         .generateAsync({
-           type:'blob'
-         })
-         .then(function(content) {
-            saveAs(content, 'avgs.zip');
-         })
+      if ( window.navigator.msSaveOrOpenBlob) {
+        window.navigator.msSaveBlob(blob, filename);
+      }
+      else{
+        var elem = window.document.createElement('a');
+        elem.href = window.URL.createObjectURL(blob);
+        elem.download = filename;
+        document.body.appendChild(elem);
+        elem.click();
+        document.body.removeChild(elem);
       }
     }
   }

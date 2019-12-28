@@ -23,12 +23,13 @@ const CopyAVG = (() => {
     },
 
     /**
-     * GetPalette
+     * CoptToClipboard
      * @param {item} color
      */
     copyToClipboard(avgCode) {
       const selection = window.getSelection()
       const range = document.createRange()
+
       range.selectNodeContents(avgCode)
       selection.removeAllRanges()
       selection.addRange(range)
@@ -54,6 +55,7 @@ const CopyAVG = (() => {
      */
     btnState(btnEl, message, btnStateClass ) {
       const original = btnEl.textContent
+      
       btnEl.textContent = message
       btnEl.classList.add(btnStateClass)
 

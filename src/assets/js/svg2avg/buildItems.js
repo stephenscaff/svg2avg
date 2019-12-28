@@ -6,8 +6,7 @@ import parseTransform from './parseTransform.js'
  * @return {object | undefined}
  */
 export default function buildItems(children){
-  //let items = [].slice.call(children).map(child => {
-
+  
   // Map over our svg items
   let items = [...children].map(child => {
 
